@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+:root{
+    --primary: #029ae0;
+    --primary-100: #073044;
+    --primary-200: #415a66;
+    --primary-300: #017cb3;
+    --primary-400: #50B6e6;
+    --background: #202124;
+    --background-100: #26282b;
+    --background-200: #3b3c3f;
+    --font-xs: 10px;
+    --font-sm: 12px;
+    --font-base: 14px;
+    --font-lg: 16px;
+    --font-xl: 18px;
+    --font-2xl: 20px;
+    --font-3xl: 24px;
+}
+
+*{
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* the body here is called html tag, when assign them some style properties/overrite it no need to start by any syntax*/
+body{
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-areas: 'sidebar content';
+    height: 100vh;
+    background-color: var(--background);
+    color: #fff;
+}
+
+/* General styles */
+
+h2 {
+    font-size: var(--font-3xl);
+}
+
+h3 {
+    font-size: var(--font-2xl);
+}
+h4 {
+    font-size: var(--font-xl);
+}
+h5 {
+    font-size: var(--font-lg);
+}
+
+button{
+    padding: 8px 15px;
+    cursor: pointer;
+    height: 40px;
+    font-size: 14px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 100px;
+    border: none;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+button:hover {
+    background-color: var(--primary-400);
+}
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+  
+
+/* To assign the style for and id, or div with id, they has hash "#" */
+/* Sidebar styles */
+#sidebar{
+    background-color: var(--background-100);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+}
+
+#company-logo{
+    height: 65px;
+}   
+
+#nav-buttons{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+/* Nav buttons styles - what is li? >> as I remember this about all element inside that section*/
+#nav-buttons li{
+    list-style-type: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+#nav-buttons li:hover{
+    background-color: var(--primary);
+}
+
+/* Content styles */
+#content{
+    
+}
+
+header{
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+/* to select or assign the style of class they have the syntax is "." */ 
+.project-card {
+    background-color: var(--background-100);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.project-card:hover{
+    outline: 2px solid var(--primary);
+}
+
+.card-header {
+    display: flex;
+    column-gap: 20px;
+    padding: 15px 20px;
+    align-items: center;
+    justify-content: start;
+    border-bottom: 2px solid #3b3c3f;
+    height: 60px;
+}
+
+.card-content {
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: start;
+}
+
+/* Card properties width 100% take full width of panel which here is card-property */
+.card-property {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#projects-list {
+    display: grid;
+    padding: 20px 40px;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+/*form styles*/
+dialog {
+    background-color: transparent;
+    border: none;
+    margin: auto;
+}
+/* ::backdrop is a pseudo element in CSS > check on the developer.mozilla for more detail */
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+form {
+    width: 450px;
+    border-radius: 10px;
+    background-color: var(--background-100);
+    color: #fff;
+}
+
+form h2 {
+    padding: 20px;
+    border-bottom: 2px solid var(--background-200);
+}
+
+form .input-list {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    row-gap: 25px;
+}
+
+form .form-field-container {
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea, select {
+    color: white;
+    background-color: var(--background-200);
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: var(--font-base);
+}
+/* :focused means this style aplly when cursor is inside the input area, similar to :hover*/
+input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--primary);
+}
+
+/* Button of the form styles, a custom from myself */
+.button1 {
+    outline: 2px solid var(--primary);
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.button1:hover{
+    background-color: rgb(18, 142,18);
+}
+
+/* Project detail page */
+
+.dashboard-card {
+    background-color: var(--background-100);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+  
+#project-details > .main-page-content {
+    display: grid;
+    padding: 20px 40px;
+    gap: 30px;
+    grid-template-columns: 475px 1fr;
+    height: 100%;
+}
+  
+.btn-secondary {
+    background-color: transparent; 
+    outline: 2px solid #969696; 
+    width: 100px; 
+    text-align: center;
+}
+  
+.btn-secondary:hover {
+    background-color: var(--primary); 
+    outline: none;
+}
+  
+.todo-item {
+    padding: 20px;
+    background-color: var(--background-200);
+    border-radius: 10px;
+    cursor: pointer;
+}
+  
+.todo-item:hover {
+    background-color: var(--primary);
+}
+
+/* This is for error modal */
+#error-msg {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:min-content;
+}
