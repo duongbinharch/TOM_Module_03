@@ -26,7 +26,9 @@
 }
 
 /* the body here is called html tag, when assign them some style properties/overrite it no need to start by any syntax*/
-body{
+/*body{*/
+
+#app{
     display: grid;
     grid-template-columns: 300px 1fr;
     grid-template-areas: 'sidebar content';
@@ -95,7 +97,7 @@ button:hover {
     row-gap: 15px;
 }
 
-/* Nav buttons styles - what is li? >> as I remember this about all element inside that section*/
+/* Nav buttons styles - li is list item element inside that section*/
 #nav-buttons li{
     list-style-type: none;
     padding: 15px;
@@ -107,6 +109,13 @@ button:hover {
     column-gap: 10px;
 }
 
+/* a means anchor, meaning a link or hyperlink */
+#nav-buttons a{
+    color: white;
+    text-decoration: none;  
+}
+
+/* when hover on the nav button */
 #nav-buttons li:hover{
     background-color: var(--primary);
 }
@@ -159,6 +168,11 @@ header{
     align-items: center;
     justify-content: space-between;
     width: 100%;
+}
+
+#projects-list a {
+    color: white;
+    text-decoration: none;
 }
 
 #projects-list {
@@ -246,18 +260,33 @@ input:focus, textarea:focus, select:focus {
     height: 100%;
 }
   
+
 .btn-secondary {
-    background-color: transparent; 
-    outline: 2px solid #969696; 
-    width: 100px; 
-    text-align: center;
+    display: inline-flex;       /* cho chứa nội dung ngang */
+    align-items: center;
+    justify-content: center;
+    column-gap: 8px;            /* khoảng cách giữa text và icon */
+    color: white;
+    text-decoration: none;
+    background-color: transparent;
+    outline: 2px solid #969696;
+    width: 100px;
+    height: 40px;              /* nếu cần kích thước cố định */
+    border-radius: 8px;
 }
   
 .btn-secondary:hover {
     background-color: var(--primary); 
     outline: none;
 }
-  
+
+.btn-secondary a {
+    display: inline-flex; /* hoặc `flex` nếu muốn block */
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
 .todo-item {
     padding: 20px;
     background-color: var(--background-200);
