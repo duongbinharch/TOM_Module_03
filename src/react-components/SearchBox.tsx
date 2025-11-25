@@ -15,7 +15,7 @@ export function SearchBox(props: Props) {
       // code html trong ProjectsPage chỗ này là: <SearchBox onChange={(value) => onProjectSearch(value)}/> trả về giá trị value cho hàm onProjectSearch trong ProjectsPage
     }}
     type="text"
-    placeholder="Search Projects by name"
+    placeholder="Search"
     style={{ width: "100%", height: "40px", backgroundColor: "var(--background-100)" }}
     />
     </div>

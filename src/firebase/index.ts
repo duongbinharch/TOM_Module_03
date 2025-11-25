@@ -35,4 +35,3 @@ export async function updateDocument<T extends Record<string, any>>(path: string
   await Firestore.updateDoc(doc, data);//the second parameter is required to be and object and the type T extends Record<string, any> ensures that data is an object with string keys (1st para of Record?) and any type of values (2nd para of Record?)
 }
 
-//updateDocument<Partial<IProject>>("/projects", "some-project-id", { name: "Updated Project Name" });//Example usage of updateDocument function with Partial<IProject> type to update only the name field of the project

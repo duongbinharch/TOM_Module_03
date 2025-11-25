@@ -12,8 +12,10 @@ interface Props {//interface is a TypeScript feature to define the shape of an o
 }
 
 export function ProjectsForm(props: Props) {
-  const projectsCollection = getCollection<IProject>("/projects")//use the getCollection function from firebase/index.ts to get the collection reference (reuse the function in firebase/index.ts)
-  
+  //--- FIRESTORE PROJECTS COLLECTION REFERENCE ---
+  const projectsCollection = getCollection<IProject>("/projects")//use the getCollection function from firebase/index.ts to get the collection reference (reuse the function in firebase/index.ts) 
+
+  //--- FORM SUBMISSION HANDLERS (NEW PROJECT) ---
   //When the new project form is submitted, create a new project and close the modal
   const onFormSubmit = (e: React.FormEvent) => {
     const projectForm = document.getElementById("new-project-form")
@@ -40,9 +42,9 @@ export function ProjectsForm(props: Props) {
       alert(err)
     }
   }
-
   
-//When the edit project form is submitted, update the project and close the modal
+  //--- EDIT PROJECT FORM SUBMISSION ---
+  //When the edit project form is submitted, update the project and close the modal
   const onEditFormSubmit = async (e: React.FormEvent) => {
     const editProjectForm = document.getElementById("edit-project-form")
     if (!(editProjectForm && editProjectForm instanceof HTMLFormElement)) {return}
@@ -78,7 +80,7 @@ export function ProjectsForm(props: Props) {
     }
   }
   
-
+  //--- RENDERING ---
   return (
   <div className="page" id="projects-page" style={{ display: "flex" }}>
     <dialog id="new-project-modal">

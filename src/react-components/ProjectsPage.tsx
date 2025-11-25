@@ -14,6 +14,7 @@ interface Props {//interface is a TypeScript feature to define the shape of an o
   // Define any props for ProjectsPage if needed in the future
   projectsManager: ProjectsManager;//projectsManager is a prop of type ProjectsManager, this will be passed from parent component (here is from index.tsx) to ProjectsPage component
 }
+// FIRESTORE > COLLECTION : Get the collection reference for "projects" collection in Firestore
 const projectsCollection = getCollection<IProject>("/projects")//use the getCollection function from firebase/index.ts to get the collection reference (reuse the function in firebase/index.ts)
 
 export function ProjectsPage(props : Props) {//this is start of mounting ProjectsPage component //Props is the type of props parameter, we define it above. 'props' is an object that holds all the props passed to ProjectsPage component
@@ -46,11 +47,19 @@ export function ProjectsPage(props : Props) {//this is start of mounting Project
   }
   React.useEffect(() => {
     getFirestoreProjects()
-    //Why do we need to call this function inside useEffect? 
-    //Because we only want to fetch the projects from Firestore when the component mounts for the first time, not on every render. 
-    //If we call it directly in the component body, it would run on every render, causing unnecessary network requests and potential infinite loops.
+    /*--- Why do we need to call this function inside useEffect?  (Explaiednation below)
+    Because we only want to fetch the projects from Firestore when the component mounts for the first time, not on every render. 
+    If we call it directly in the component body, it would run on every render, causing unnecessary network requests and potential infinite loops.
+    ---*/
   },[])
-  /*--- PROJECT CARDS RENDERING ---*/
+  /*--- PROJECT CARDS RENDERING (Explaiednation below)
+  Giải thích đoạn code dưới đây:
+  Đầu tiên projects.map là một phương thức của mảng trong JavaScript, nó sẽ lặp qua từng phần tử trong mảng projects và áp dụng một hàm cho mỗi phần tử đó, kết quả của hàm sẽ được thu thập lại thành một mảng mới.
+  Trong trường hợp này, mỗi phần tử trong mảng projects đại diện cho một đối tượng project.
+  Hàm được áp dụng cho mỗi project sẽ trả về một thành phần React Router Link, với thuộc tính to được đặt thành đường dẫn đến trang chi tiết của project đó (ví dụ: /project/123 nếu project.id là 123).
+  Bên trong Link, chúng ta sử dụng thành phần ProjectCard để hiển thị thông tin của project. Chúng ta truyền đối tượng project làm prop cho ProjectCard.
+  Chúng ta cũng đặt thuộc tính key của Link thành project.id để giúp React theo dõi các phần tử trong danh sách một cách hiệu quả hơn.
+  ---*/
   const projectCards = projects.map((project) => {//reminder that .map is a method to transform each element in an array into a new element, here we transform each project into a ProjectCard component
     return (//we pass project as a prop to ProjectCard component (method to pass props from parent component to child component), and also set a unique key using project.id
       <Router.Link to={`/project/${project.id}`} key={project.id}>
@@ -71,36 +80,9 @@ export function ProjectsPage(props : Props) {//this is start of mounting Project
     if (!(modal && modal instanceof HTMLDialogElement)) {return}
     modal.showModal()
   }
-  /*--- IGNORE ---
-  //When the new project form is submitted, create a new project and close the modal
-  const onFormSubmit = (e: React.FormEvent) => {
-    const projectForm = document.getElementById("new-project-form")
-    if (!(projectForm && projectForm instanceof HTMLFormElement)) {return}
-    e.preventDefault()
-    const formData = new FormData(projectForm)
-    const projectData: IProject = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      status: formData.get("status") as ProjectStatus,
-      userRole: formData.get("userRole") as UserRole,
-      finishDate: new Date(formData.get("finishDate") as string)
-    }
-    try {
-      //const projectsCollection = Firestore.collection(firebaseDB, "/projects") as Firestore.CollectionReference<IProject>//reference to "projects" collection in Firestore database
-      Firestore.addDoc(projectsCollection, projectData)//add the new project to Firestore database
-      const project = props.projectsManager.newProject(projectData)// Create the new project and store it in "project" variable, and also add the new project to the list inside projectsManager
-      //console.log(project)
-      projectForm.reset()
-      const modal = document.getElementById("new-project-modal")
-      if (!(modal && modal instanceof HTMLDialogElement)) {return}
-      modal.close()
-    } catch (err) {
-      alert(err)
-    }
-  }
-  --- IGNORE ---*/
-  
-  /*--- EDIT PROJECT FORM SUBMISSION ---*/
+  //--- NEW PROJECT FORM SUBMISSION HANDLERS --- has been immigrated to ProjectsForm.TSX---/
+
+  //--- EDIT PROJECT FORM OPENING ---/
   //Handle opening the edit project modal when the URL hash changes
   const location = Router.useLocation();
   React.useEffect(() => {
@@ -129,54 +111,17 @@ export function ProjectsPage(props : Props) {//this is start of mounting Project
           (editForm.elements.namedItem("finishDate") as HTMLInputElement | null)!.value = project.finishDate.toISOString().slice(0,10);
         }
       }
-      
       modal.showModal()
     }
   }, [location]);
 
-  /*--- EDIT PROJECT FORM SUBMISSION 
-  //When the edit project form is submitted, update the project and close the modal
-  const onEditFormSubmit = (e: React.FormEvent) => {
-    const editProjectForm = document.getElementById("edit-project-form")
-    if (!(editProjectForm && editProjectForm instanceof HTMLFormElement)) {return}
-    e.preventDefault()
-    const formData = new FormData(editProjectForm)
-    const projectId = formData.get("projectId") as string | null
-    if (!projectId) { alert("No projectId"); return }
-    const project = props.projectsManager.getProject(projectId)
-    if (!project) { alert("Project not found"); return }
-    // update fields on the project instance
-    project.name = formData.get("name") as string
-    project.description = formData.get("description") as string
-    project.userRole = formData.get("userRole") as UserRole
-    project.status = formData.get("status") as ProjectStatus
-    project.finishDate = new Date(formData.get("finishDate") as string)
-    // reflect changes in state
-    setProjects([...props.projectsManager.list])
-    // close modal
-    const modal = document.getElementById("edit-project-modal")
-    if (modal && modal instanceof HTMLDialogElement) modal.close()
-    //update the project in Firestore database
-    try {
-      updateDocument<Partial<IProject>>("/projects", projectId, { 
-          name: project.name,
-          description: project.description,
-          userRole: project.userRole,
-          status: project.status,
-          finishDate: project.finishDate
-      });
-    } catch (err) {
-      alert(err)
-    }
-  }
-  ---*/
+  //--- EDIT PROJECT FORM SUBMISSION --- has been immigrated to ProjectsForm.TSX ---/
   
   /*--- EXPORT & IMPORT PROJECTS ---*/
   //Handle import/export projects
   const onExportProject = () => {
     props.projectsManager.exportToJSON()
   }
-  
   const onImportProject = () => {
     props.projectsManager.importFromJSON()
   }
