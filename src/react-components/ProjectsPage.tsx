@@ -14,6 +14,13 @@ interface Props {//interface is a TypeScript feature to define the shape of an o
   // Define any props for ProjectsPage if needed in the future
   projectsManager: ProjectsManager;//projectsManager is a prop of type ProjectsManager, this will be passed from parent component (here is from index.tsx) to ProjectsPage component
 }
+
+
+type FirestoreProject = IProject & {
+  cost?: number
+  progress?: number
+}
+
 // FIRESTORE > COLLECTION : Get the collection reference for "projects" collection in Firestore
 const projectsCollection = getCollection<IProject>("/projects")//use the getCollection function from firebase/index.ts to get the collection reference (reuse the function in firebase/index.ts)
 
@@ -122,8 +129,23 @@ export function ProjectsPage(props : Props) {//this is start of mounting Project
   const onExportProject = () => {
     props.projectsManager.exportToJSON()
   }
-  const onImportProject = () => {
-    props.projectsManager.importFromJSON()
+  const onImportProject = async () => {
+    const importedProjects = await props.projectsManager.importFromJSON()
+    if (importedProjects.length === 0) return
+
+    await Promise.all(importedProjects.map((project) => {
+      const docRef = Firestore.doc(projectsCollection, project.id)
+      const payload: FirestoreProject = {
+        name: project.name,
+        description: project.description,
+        status: project.status,
+        userRole: project.userRole,
+        finishDate: project.finishDate,
+        cost: project.cost,
+        progress: project.progress,
+      }
+      return Firestore.setDoc(docRef, payload, { merge: true })
+    }))
   }
   
   /*--- SEARCH PROJECTS ---*/

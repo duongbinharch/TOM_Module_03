@@ -1,5 +1,12 @@
 import { IProject, Project } from "./Project"
 
+// Update the ProjectManager with the import data
+type ImportedProject = IProject & {
+  id?: string
+  cost?: number
+  progress?: number
+}
+
 export class ProjectsManager {
   list: Project[] = []// Array to hold Project instances, list: is a property of ProjectsManager class
   onProjectCreated = (project : Project) => {} // this is an event handler that will be called when a new project is created, it takes the created project as parameter
@@ -61,33 +68,68 @@ export class ProjectsManager {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = fileName
+    a.download = fileName.endsWith(".json") ? fileName : `${fileName}.json` // Ensure the file name ends with .json
     a.click()
     URL.revokeObjectURL(url)
   }
   
   importFromJSON() {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'application/json'
-    const reader = new FileReader()
-    reader.addEventListener("load", () => {
-      const json = reader.result
-      if (!json) { return }
-      const projects: IProject[] = JSON.parse(json as string)
-      for (const project of projects) {
-        try {
-          this.newProject(project)
-        } catch (error) {
-          
+    return new Promise<Project[]>((resolve) => {
+      const importedProjects: Project[] = []
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'application/json'
+
+      input.addEventListener('change', () => {
+        const filesList = input.files
+        if (!filesList || filesList.length === 0) {
+          resolve([])
+          return
         }
-      }
+
+        const reader = new FileReader()
+        reader.addEventListener("load", () => {
+          try{
+            const json = reader.result
+            if (!json) { 
+              resolve([])
+              return 
+            }
+
+            const parsed = JSON.parse(json as string) 
+            const projects = Array.isArray(parsed) ? parsed as ImportedProject[] : []
+
+            for (const imported of projects) {
+              try {
+                const normalized: IProject = {
+                  name: imported.name,
+                  description: imported.description,
+                  status: imported.status,
+                  userRole: imported.userRole,
+                  finishDate: imported.finishDate instanceof Date
+                    ? imported.finishDate
+                    : new Date(imported.finishDate),
+                }
+
+                const project = this.newProject(normalized, imported.id)
+                if (typeof imported.cost === "number") project.cost = imported.cost
+                if (typeof imported.progress === "number") project.progress = imported.progress
+                importedProjects.push(project)
+              } catch (error) {
+                // Skip invalid or duplicated projects and continue importing the rest.
+              }
+            }
+
+            resolve(importedProjects)
+          } catch (error) {
+            resolve([])
+          }
+        })
+
+        reader.readAsText(filesList[0])
+      })
+
+      input.click()
     })
-    input.addEventListener('change', () => {
-      const filesList = input.files
-      if (!filesList) { return }
-      reader.readAsText(filesList[0])
-    })
-    input.click()
   }
 }
