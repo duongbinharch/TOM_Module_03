@@ -21,6 +21,30 @@ type FirestoreProject = IProject & {
   progress?: number
 }
 
+function parseFirestoreDate(value: unknown): Date {
+  if (value instanceof Date) {
+    return value
+  }
+
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "toDate" in value &&
+    typeof (value as { toDate: unknown }).toDate === "function"
+  ) {
+    return (value as { toDate: () => Date }).toDate()
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed
+    }
+  }
+
+  return new Date()
+}
+
 // FIRESTORE > COLLECTION : Get the collection reference for "projects" collection in Firestore
 const projectsCollection = getCollection<IProject>("/projects")//use the getCollection function from firebase/index.ts to get the collection reference (reuse the function in firebase/index.ts)
 
@@ -41,7 +65,7 @@ export function ProjectsPage(props : Props) {//this is start of mounting Project
       //console.log("Firestore project data:", data)}
       const project: IProject = {
         ...data,//spread operator to copy all properties from data object to project object
-        finishDate: (data.finishDate as unknown as Firestore.Timestamp).toDate()//convert Firestore Timestamp to JavaScript Date object
+        finishDate: parseFirestoreDate(data.finishDate)//support Timestamp, Date, or ISO/string values
       }
       //create a new Project instance using the data from Firestore
       try {
