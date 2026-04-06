@@ -14,6 +14,8 @@ import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 export function ThreeViewer() {
+  const baseUrl = import.meta.env.BASE_URL
+
   //Declare variables for ThreeJS components, these variables will be initialized in the setViewer function
   //Cầm declare trước vì nếu không các biến này sẽ chỉ có scope trong hàm setViewer, không thể truy cập từ các hàm khác như renderScene
   //To avoid undefined errors, shadowing the variables here
@@ -110,11 +112,11 @@ export function ThreeViewer() {
     objLoader = new OBJLoader()
     mtlLoader = new MTLLoader()
   
-    mtlLoader.load("../assets/Gear/Gear1.mtl", (materials) => {
+    mtlLoader.load(`${baseUrl}Gear/Gear1.mtl`, (materials) => {
       materials.preload()//Preload the materials before applying them to the mesh
       if (!objLoader) { return }
       objLoader.setMaterials(materials)//Set the materials to be used by the OBJLoader instance when loading OBJ files.
-      objLoader.load("../assets/Gear/Gear1.obj", (object) => {
+      objLoader.load(`${baseUrl}Gear/Gear1.obj`, (object) => {
         if (!scene) { return }
         scene.add(object)//Add the loaded mesh to the scene
         mesh = object //Assign the loaded mesh to the mesh variable for later use in the return fuction below
