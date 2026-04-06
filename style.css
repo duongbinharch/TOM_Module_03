@@ -163,6 +163,18 @@ header{
     align-items: start;
 }
 
+.project-icon {
+    padding: 10px;
+    border-radius: 8px;
+    aspect-ratio: 1;
+    min-width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
 /* Card properties width 100% take full width of panel which here is card-property */
 .card-property {
     display: flex;

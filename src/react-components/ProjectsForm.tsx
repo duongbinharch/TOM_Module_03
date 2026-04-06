@@ -22,8 +22,13 @@ export function ProjectsForm(props: Props) {
     if (!(projectForm && projectForm instanceof HTMLFormElement)) {return}
     e.preventDefault()
     const formData = new FormData(projectForm)
+    const projectName = (formData.get("name") as string).trim()
+    if (projectName.length < 5) {
+      alert("Project name must contain at least 5 characters")
+      return
+    }
     const projectData: IProject = {
-      name: formData.get("name") as string,
+      name: projectName,
       description: formData.get("description") as string,
       status: formData.get("status") as ProjectStatus,
       userRole: formData.get("userRole") as UserRole,
@@ -94,6 +99,8 @@ export function ProjectsForm(props: Props) {
       <input
       name="name"
       type="text"
+      minLength={5}
+      required
       placeholder="What's the name of your project?"
       />
       <p

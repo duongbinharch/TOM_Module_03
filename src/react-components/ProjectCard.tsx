@@ -7,18 +7,36 @@ interface Props {//interface is a TypeScript feature to define the shape of an o
 }
 
 export function ProjectCard(props: Props) {
+    const iconColors = [
+        '#ca8134',
+        '#1f8a70',
+        '#2f6fed',
+        '#a44cd3',
+        '#e35d5b',
+        '#0f766e'
+    ]
+
+    const getRandomIconColor = (projectId: string) => {
+        let hash = 0
+        for (let i = 0; i < projectId.length; i++) {
+            hash = (hash << 5) - hash + projectId.charCodeAt(i)
+            hash |= 0
+        }
+        return iconColors[Math.abs(hash) % iconColors.length]
+    }
+
+    const iconText = props.project.name.trim().slice(0, 2) || 'NA'
+
     return (
         <div className="project-card">
             <div className="card-header">
                 <p
+                className="project-icon"
                 style={{
-                    backgroundColor: "#ca8134",
-                    padding: 10,
-                    borderRadius: 8,
-                    aspectRatio: 1
+                    backgroundColor: getRandomIconColor(props.project.id)
                 }}
                 >
-                HC
+                {iconText}
                 </p>
                 <div>
                     <h5>{props.project.name}</h5>
